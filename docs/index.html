@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoMoto 台灣機車比較網 | 規格比較與市場即時價格查詢</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="dark-theme">
+    <!-- Header/Nav -->
+    <header class="glass-nav">
+        <div class="nav-container">
+            <a href="./" class="logo">
+                <i class="fa-solid fa-motorcycle logo-icon"></i>
+                <span class="logo-text">Mo<span class="gradient-text">Moto</span></span>
+            </a>
+            <div class="nav-actions">
+                <button id="ai-wizard-btn" class="btn btn-primary btn-glow">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI 智慧選車
+                </button>
+                <button id="theme-toggle" class="btn btn-icon">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <span class="hero-badge"><i class="fa-solid fa-fire"></i> 全台首創市場多通路價格整合</span>
+                <h1>找尋您的下一部完美座駕</h1>
+                <p class="hero-subtitle">整合台灣主流 125cc / 150cc 機車，搭配 momo、蝦皮與官方實時價格與政府補助計算機，幫您省下每一分錢。</p>
+                
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-brands">3+</span>
+                        <span class="stat-label">主流品牌</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-models">10+</span>
+                        <span class="stat-label">在售車款</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-low-price">---</span>
+                        <span class="stat-label">最低市場價</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Filter Controls -->
+        <section class="filter-section">
+            <div class="filter-card glass-panel">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="search-input" placeholder="搜尋車款名稱、廠牌或特色...（例如：勁戰、全新迪爵、水冷）">
+                </div>
+                
+                <div class="filter-grid">
+                    <!-- Brand Filter -->
+                    <div class="filter-group">
+                        <label><i class="fa-solid fa-tags"></i> 廠牌</label>
+                        <div class="chip-group" id="brand-chips">
+                            <span class="chip active" data-value="all">全部</span>
+                            <span class="chip" data-value="SYM 三陽">SYM 三陽</span>
+                            <span class="chip" data-value="KYMCO 光陽">KYMCO 光陽</span>
+                            <span class="chip" data-value="YAMAHA 山葉">YAMAHA 山葉</span>
+                        </div>
+                    </div>
+
+                    <!-- Engine Class Filter -->
+                    <div class="filter-group">
+                        <label><i class="fa-solid fa-gauge-high"></i> 排氣量級距</label>
+                        <div class="chip-group" id="cc-chips">
+                            <span class="chip active" data-value="all">全部</span>
+                            <span class="chip" data-value="125">125 cc</span>
+                            <span class="chip" data-value="150">150 cc+</span>
+                        </div>
+                    </div>
+
+                    <!-- Braking/Tech Filter -->
+                    <div class="filter-group">
+                        <label><i class="fa-solid fa-shield-halved"></i> 安全配備</label>
+                        <div class="chip-group" id="safety-chips">
+                            <span class="chip active" data-value="all">不限</span>
+                            <span class="chip" data-value="abs">有 ABS</span>
+                            <span class="chip" data-value="tcs">有 TCS</span>
+                            <span class="chip" data-value="cbs">有 CBS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-footer">
+                    <span class="results-count" id="results-count">共 0 款符合條件</span>
+                    <div class="sort-group">
+                        <label for="sort-select">排序：</label>
+                        <select id="sort-select">
+                            <option value="default">預設排序</option>
+                            <option value="price-asc">市場價格：低到高</option>
+                            <option value="price-desc">市場價格：高到低</option>
+                            <option value="fuel-desc">油耗表現：省油優先</option>
+                            <option value="weight-asc">車重輕量：輕量優先</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Product Grid -->
+        <section class="products-container">
+            <div id="product-grid" class="product-grid">
+                <!-- Loading State -->
+                <div class="loading-spinner">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p>正在載入機車規格與最新 momo 價格資料...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Comparison Bar -->
+    <div id="compare-bar" class="compare-bar hidden">
+        <div class="compare-bar-container">
+            <div class="compare-items" id="compare-items-list">
+                <!-- Items added to compare will show here -->
+            </div>
+            <div class="compare-actions">
+                <button id="clear-compare-btn" class="btn btn-text">清除</button>
+                <button id="trigger-compare-btn" class="btn btn-accent btn-glow">
+                    立即比較 <span id="compare-badge">0</span>/4
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div id="compare-modal" class="modal hidden">
+        <div class="modal-content modal-large glass-panel">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-code-compare"></i> 機車詳細規格比較表</h3>
+                <button class="close-btn" id="close-compare-modal">&times;</button>
+            </div>
+            <div class="modal-body overflow-x">
+                <table class="compare-table" id="compare-table-element">
+                    <!-- Dynamic comparison table goes here -->
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Wizard Modal -->
+    <div id="ai-wizard-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-wand-magic-sparkles gradient-text"></i> AI 智慧選車助理</h3>
+                <button class="close-btn" id="close-wizard-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wizard-steps" id="wizard-steps-container">
+                    <!-- Step 1 -->
+                    <div class="wizard-step active" data-step="1">
+                        <h4>1. 您的購車主要用途是什麼？</h4>
+                        <div class="option-grid">
+                            <button class="wizard-option" data-key="purpose" data-value="commute">
+                                <i class="fa-solid fa-briefcase"></i>
+                                <span>日常通勤/通學</span>
+                                <small>注重省油、耐操、好保養</small>
+                            </button>
+                            <button class="wizard-option" data-key="purpose" data-value="sport">
+                                <i class="fa-solid fa-gauge-simple-high"></i>
+                                <span>熱血跑山/運動操控</span>
+                                <small>注重馬力、彎道極限、煞車配備</small>
+                            </button>
+                            <button class="wizard-option" data-key="purpose" data-value="cargo">
+                                <i class="fa-solid fa-box"></i>
+                                <span>外送載貨/多功能載重</span>
+                                <small>注重載物平台、大踏板、大油箱</small>
+                            </button>
+                            <button class="wizard-option" data-key="purpose" data-value="style">
+                                <i class="fa-solid fa-palette"></i>
+                                <span>時尚復古/顏值至上</span>
+                                <small>注重外觀設計、輕量化、好牽車</small>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="wizard-step" data-step="2">
+                        <h4>2. 您的購車預算大概是多少？</h4>
+                        <div class="option-grid">
+                            <button class="wizard-option" data-key="budget" data-value="budget">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                                <span>親民實惠 (7萬以下)</span>
+                                <small>高性價比，實用代步</small>
+                            </button>
+                            <button class="wizard-option" data-key="budget" data-value="mid">
+                                <i class="fa-solid fa-credit-card"></i>
+                                <span>主流均衡 (7萬 - 9.5萬)</span>
+                                <small>兼顧質感與部分科技配備</small>
+                            </button>
+                            <button class="wizard-option" data-key="budget" data-value="premium">
+                                <i class="fa-solid fa-crown"></i>
+                                <span>旗艦運動 (9.5萬以上)</span>
+                                <small>頂級規格、強悍水冷與完整電控</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="wizard-step" data-step="3">
+                        <h4>3. 您特別在意哪些特色或配備？(可複選)</h4>
+                        <div class="option-grid">
+                            <button class="wizard-option multi" data-key="priorities" data-value="fuel">
+                                <i class="fa-solid fa-leaf"></i>
+                                <span>極致省油 (1級油耗)</span>
+                            </button>
+                            <button class="wizard-option multi" data-key="priorities" data-value="safety">
+                                <i class="fa-solid fa-shield-cat"></i>
+                                <span>雙電控安全 (ABS+TCS)</span>
+                            </button>
+                            <button class="wizard-option multi" data-key="priorities" data-value="keyless">
+                                <i class="fa-solid fa-key"></i>
+                                <span>Keyless 免鑰匙系統</span>
+                            </button>
+                            <button class="wizard-option multi" data-key="priorities" data-value="storage">
+                                <i class="fa-solid fa-basket-shopping"></i>
+                                <span>超大置物車廂</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="wizard-prev-btn" class="btn btn-secondary hidden">上一步</button>
+                <button id="wizard-next-btn" class="btn btn-primary" disabled>下一步</button>
+                <button id="wizard-submit-btn" class="btn btn-accent btn-glow hidden">開始AI分析</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Recommendation Result Modal -->
+    <div id="ai-result-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-circle-check text-success"></i> AI 智慧推薦結果</h3>
+                <button class="close-btn" id="close-result-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="result-intro">根據您的需求偏好，我們為您篩選出推薦指數最高的 3 款機車：</p>
+                <div class="result-list" id="ai-recommendations-list">
+                    <!-- Recommendations cards will be dynamically added here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="restart-wizard-btn" class="btn btn-primary">重新評估</button>
+                <button class="close-btn-footer btn btn-secondary" id="close-result-modal-btn">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 MoMoto 台灣機車比較網. 價格整合自 momo、蝦皮與官方建議售價。</p>
+            <div class="db-info">
+                <span id="last-update-time"><i class="fa-solid fa-clock"></i> 最後更新時間：載入中...</span>
+                <button id="refresh-db-btn" class="btn btn-text btn-small">
+                    <i class="fa-solid fa-arrows-rotate"></i> 更新市場價格
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="index.js"></script>
+</body>
+</html>
