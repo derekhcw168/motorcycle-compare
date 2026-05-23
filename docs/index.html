@@ -66,6 +66,14 @@
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
                     <input type="text" id="search-input" placeholder="搜尋車款名稱、廠牌或特色...（例如：勁戰、全新迪爵、水冷）">
                 </div>
+                <div class="quick-tags-container" style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;"><i class="fa-solid fa-star"></i> 熱門推薦：</span>
+                    <span class="quick-tag" data-tag="國民神車">🏆 國民神車</span>
+                    <span class="quick-tag" data-tag="運動水冷">⚡ 運動水冷</span>
+                    <span class="quick-tag" data-tag="省油之王">🍃 省油之王</span>
+                    <span class="quick-tag" data-tag="免鑰匙">🔑 免鑰匙 Keyless</span>
+                    <span class="quick-tag" data-tag="超大載物">👜 超大載物</span>
+                </div>
                 
                 <div class="filter-grid">
                     <!-- Brand Filter -->
@@ -149,12 +157,51 @@
         <div class="modal-content modal-large glass-panel">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-code-compare"></i> 機車詳細規格比較表</h3>
+                <div class="toggle-wrapper" style="margin-left: auto; margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">僅顯示差異項目</span>
+                    <label class="switch">
+                        <input type="checkbox" id="diff-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
                 <button class="close-btn" id="close-compare-modal">&times;</button>
             </div>
             <div class="modal-body overflow-x">
                 <table class="compare-table" id="compare-table-element">
                     <!-- Dynamic comparison table goes here -->
                 </table>
+                
+                <!-- TCO Section -->
+                <div class="tco-section glass-panel" style="margin-top: 2.5rem; padding: 1.5rem; background-color: rgba(255,255,255,0.01); border: 1px dashed var(--border-color);">
+                    <h4 style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); font-size: 1.1rem;">
+                        <i class="fa-solid fa-coins text-warning"></i> 購車與燃油總持有成本 (TCO) 估算器
+                    </h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                        除了購車價格外，後續的燃油花費也是一大開銷。請調整下方行駛條件，系統將為您估算未來的燃油持有成本。(依台灣 95 無鉛汽油 NT$ 31/L 估算)
+                    </p>
+                    <div class="tco-controls" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div class="tco-control-item" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <label style="font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between; color: var(--text-secondary);">
+                                <span>預估年行駛里程</span>
+                                <span id="tco-mileage-val" style="color: var(--color-primary); font-weight: 700;">8,000 km</span>
+                            </label>
+                            <input type="range" id="tco-mileage" min="1000" max="30000" step="500" value="8000" style="width: 100%; accent-color: var(--color-primary); height: 6px; border-radius: 3px; cursor: pointer;">
+                        </div>
+                        <div class="tco-control-item" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">預計騎乘年數</label>
+                            <select id="tco-years" style="height: 38px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 6px; padding: 0 0.5rem; outline: none; cursor: pointer; font-family: var(--font-primary);">
+                                <option value="1">1 年</option>
+                                <option value="3">3 年</option>
+                                <option value="5" selected>5 年</option>
+                                <option value="8">8 年</option>
+                                <option value="10">10 年</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="tco-chart-container" class="tco-chart-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Dynamic TCO bars render here -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -265,6 +312,32 @@
             <div class="modal-footer">
                 <button id="restart-wizard-btn" class="btn btn-primary">重新評估</button>
                 <button class="close-btn-footer btn btn-secondary" id="close-result-modal-btn">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Detail Modal -->
+    <div id="detail-modal" class="modal hidden">
+        <div class="modal-content glass-panel" style="max-width: 750px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-circle-info gradient-text"></i> 車款詳細規格資訊</h3>
+                <button class="close-btn" id="close-detail-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="detail-modal-body" style="max-height: 80vh; overflow-y: auto;">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Subsidy Detail Modal -->
+    <div id="subsidy-modal" class="modal hidden">
+        <div class="modal-content glass-panel" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calculator text-success"></i> 汰舊換新補助明細</h3>
+                <button class="close-btn" id="close-subsidy-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="subsidy-modal-body">
+                <!-- Dynamic content -->
             </div>
         </div>
     </div>
